@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://java.sun.com/jsf/passthrough"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+</h:head>
+<h:body>
+
+	<ui:composition template="/template/template.xhtml">
+		<ui:param name="title" value="New item" />
+		<ui:define name="content">
+
+			<h1>New item:</h1>
+
+			<h:form>
+
+				<p:panelGrid id="grid" styleClass="form">
+					<p:row>
+						<p:column colspan="5">
+							<p:messages id="messages" showDetail="true" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							description: 
+						</p:column>
+						<p:column>
+							<p:inputText value="#{itemManager.item.description}"
+								title="description" id="description" />
+						</p:column>
+						<p:column>
+							<p:message for="description" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							stock:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{itemManager.item.stock}" title="stock"
+								id="stock" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							price:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{itemManager.item.price}" title="price"
+								id="price" />
+						</p:column>
+						<p:column>
+							<p:message for="price" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							image:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{itemManager.item.image}" title="image"
+								id="image" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="5">
+							<p:commandButton actionListener="#{itemManager.save()}"
+								action="/item/list?faces-redirect=true&amp;includeViewParams=true"
+								value="Save item" update="grid" />
+							<p:commandButton immediate="true"
+								action="/item/list?faces-redirect=true&amp;includeViewParams=true"
+								value="Cancel" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

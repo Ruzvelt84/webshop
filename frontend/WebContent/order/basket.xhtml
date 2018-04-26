@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://java.sun.com/jsf/passthrough"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+</h:head>
+<h:body>
+	<ui:composition template="/template/template.xhtml">
+		<ui:param name="title" value="Basket" />
+		<ui:define name="content">
+
+			<h1>Basket:</h1>
+
+			<h:form>
+
+				<p:contextMenu for="dt">
+					<p:menuitem value="Delete" update="dt" icon="ui-icon-close"
+						actionListener="#{basket.removeSelected()}" />
+				</p:contextMenu>
+
+				<p:dataTable var="oi" value="#{basket.items}" id="dt"
+					selectionMode="single" selection="#{basket.selectedItem}"
+					rowKey="#{oi.item}">
+					<p:column headerText="name">
+						#{oi.item.description}
+					</p:column>
+					<p:column headerText="quantity">
+						#{oi.quantity}
+					</p:column>
+				</p:dataTable>
+
+			</h:form>
+
+			<br />
+			<br />
+
+			<h:form>
+
+				<p:panelGrid id="grid">
+					<p:row>
+						<p:column colspan="2">
+							<p:messages />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							name:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{userOrderManager.userOrder.name}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							surname:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{userOrderManager.userOrder.surname}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							order date:
+						</p:column>
+						<p:column>
+							<p:calendar pattern="dd.MM.yyyy"
+								value="#{userOrderManager.userOrder.orderDate}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							email:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{userOrderManager.userOrder.email}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							address:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{userOrderManager.userOrder.address}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							phone:
+						</p:column>
+						<p:column>
+							<p:inputText value="#{userOrderManager.userOrder.phone}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton action="#{userOrderManager.save}"
+								value="Order items" update="grid" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+			</h:form>
+
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>
