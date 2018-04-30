@@ -7,19 +7,20 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-
 @Entity
 @Table(name = "user_order")
-public class UserOrder implements Serializable{
+public class UserOrder implements Serializable {
 
 	/**
 	 * 
@@ -29,29 +30,26 @@ public class UserOrder implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected long id;
-	
+
 	@Column(name = "name", columnDefinition = "VARCHAR(50)", nullable = false)
-	@NotNull(message="{emptyName}")
+	@NotNull(message = "{emptyName}")
 	private String name;
-	
+
 	@Column(name = "surname", columnDefinition = "VARCHAR(50)", nullable = false)
 	private String surname;
-	
+
 	@Column(name = "email", columnDefinition = "VARCHAR(100)", nullable = false)
 	private String email;
-	
+
 	@Column(name = "phone", columnDefinition = "VARCHAR(50)", nullable = false)
 	private String phone;
-	
+
 	@Column(name = "address", columnDefinition = "VARCHAR(100)", nullable = false)
 	private String address;
-	
+
 	@Column(name = "order_date", length = 20, nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date orderDate;
-	
-	@OneToMany(mappedBy = "userOrder", cascade=CascadeType.ALL)
-	private List<OrderedProduct> orderedProducts;
 
 	public long getId() {
 		return id;
@@ -109,12 +107,4 @@ public class UserOrder implements Serializable{
 		this.orderDate = orderDate;
 	}
 
-	public List<OrderedProduct> getOrderedProducts() {
-		return orderedProducts;
-	}
-
-	public void setOrderedProducts(List<OrderedProduct> orderedProducts) {
-		this.orderedProducts = orderedProducts;
-	}
-	
 }

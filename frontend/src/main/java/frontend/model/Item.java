@@ -9,7 +9,6 @@ public class Item {
 	private String image;
 	private double stock;
 	private String description;
-	private List<Item> itemList;
 
 	public long getId() {
 		return id;
@@ -49,14 +48,6 @@ public class Item {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public List<Item> getItemList() {
-		return itemList;
-	}
-
-	public void setItemList(List<Item> itemList) {
-		this.itemList = itemList;
 	}
 	
 }

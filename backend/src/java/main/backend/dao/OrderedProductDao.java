@@ -10,7 +10,7 @@ import backend.model.OrderedProduct;
 
 @Stateless
 public class OrderedProductDao {
-	
+
 	@PersistenceContext(unitName = "shop")
 	EntityManager entityManager;
 
@@ -23,7 +23,7 @@ public class OrderedProductDao {
 				.setParameter("ids", orderedProductId).getSingleResult();
 	}
 
-	public void addOrderedProduct(OrderedProduct orderedProduct) {				
+	public void addOrderedProduct(OrderedProduct orderedProduct) {
 		entityManager.persist(orderedProduct);
 	}
 
@@ -32,6 +32,7 @@ public class OrderedProductDao {
 	}
 
 	public void deleteUserOrder(OrderedProduct orderedProduct) {
-		entityManager.remove(entityManager.contains(orderedProduct) ? orderedProduct : entityManager.merge(orderedProduct));
+		entityManager
+				.remove(entityManager.contains(orderedProduct) ? orderedProduct : entityManager.merge(orderedProduct));
 	}
 }

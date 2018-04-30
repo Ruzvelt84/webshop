@@ -76,13 +76,14 @@ public class RestService {
 		}
 
 	}
-
+	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	@Path("addUserOrder")
-	public Response addUserOrder(UserOrder userOrder) {
+	@Path("editProduct")
+	public Response updateProduct(Product product) {
 		try {
-			userOrderDao.addUserOrder(userOrder);
+			System.out.println("item : " + product);
+			productDao.editProduct(product);
 			return Response.ok().build();
 
 		} catch (Exception e) {
@@ -90,6 +91,20 @@ public class RestService {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 
+	}
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Path("addUserOrder")
+	public Response addUserOrder(UserOrder userOrder) {
+		try {
+			userOrderDao.addUserOrder(userOrder);
+			System.out.println("user order persisted id: " + userOrder.getId());
+			return Response.ok().entity(userOrder).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 	
 	@POST

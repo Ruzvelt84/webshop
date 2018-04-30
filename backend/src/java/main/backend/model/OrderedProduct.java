@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,18 +25,49 @@ public class OrderedProduct implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected long id;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_order_id")
+    private UserOrder userOrder;
 
-	@ManyToOne
-	@JoinColumn(name = "user_order_id")
-	@JsonProperty("userOrder")
-	private UserOrder userOrder;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id")
+	@OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
 	@JsonProperty("product")
 	private Product product;
 
 	@Column(name = "quantity", nullable = false)
 	@JsonProperty("quantity")
 	private double quantity;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public UserOrder getUserOrder() {
+		return userOrder;
+	}
+
+	public void setUserOrder(UserOrder userOrder) {
+		this.userOrder = userOrder;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+	}
 }

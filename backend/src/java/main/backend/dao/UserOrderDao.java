@@ -23,7 +23,7 @@ public class UserOrderDao {
 				.setParameter("ids", userOrderId).getSingleResult();
 	}
 
-	public void addUserOrder(UserOrder userOrder) {				
+	public void addUserOrder(UserOrder userOrder) {	
 		entityManager.persist(userOrder);
 	}
 

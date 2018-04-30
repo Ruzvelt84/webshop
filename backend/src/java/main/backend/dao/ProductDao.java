@@ -19,14 +19,11 @@ public class ProductDao {
 	}
 
 	public Product getProduct(long productId) {
-		System.out.println( "long productid: " + productId);
 		return entityManager.createQuery("SELECT p FROM Product p WHERE p.id = :ids", Product.class)
 				.setParameter("ids", productId).getSingleResult();
 	}
 
 	public void addProduct(Product product) {
-		
-		
 		entityManager.persist(product);
 	}
 
