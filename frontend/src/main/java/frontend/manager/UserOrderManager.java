@@ -152,6 +152,7 @@ public class UserOrderManager {
 					}
 
 				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
 			}
 
