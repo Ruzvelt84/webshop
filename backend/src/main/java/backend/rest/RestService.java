@@ -121,4 +121,19 @@ public class RestService {
 		}
 
 	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Path("add")
+	public Response add(OrderedProduct orderedProduct) {
+		try {
+			orderedProductDao.addOrderedProduct(orderedProduct);
+			return Response.ok().build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+
+	}
 }
