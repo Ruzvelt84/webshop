@@ -28,7 +28,8 @@ public class Basket {
 		long itemId = item.getId();
 		if (items.containsKey(itemId)) {
 			OrderedItem orderedItem = items.get(itemId);
-			orderedItem.setQuantity(orderedItem.getQuantity() + quantity);
+			//orderedItem.setQuantity(orderedItem.getQuantity() + quantity);
+			orderedItem.setQuantity(quantity);
 		} else {
 			OrderedItem orderedItem = new OrderedItem();
 			orderedItem.setItem(item);

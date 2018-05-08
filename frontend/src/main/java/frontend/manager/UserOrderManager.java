@@ -11,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.http.HttpEntity;
@@ -51,36 +52,37 @@ public class UserOrderManager {
 	}
 
 	public void save() {
-		UserOrder uOrder = null;
-		try {
-			CLIENT = HttpClients.createDefault();
-			HttpPost request = new HttpPost("http://localhost:8080/backend-0.0.1-SNAPSHOT/rest/addUserOrder");
-			JSONObject json = new JSONObject();
-			json.put("address", userOrder.getAddress());
-			json.put("email", userOrder.getEmail());
-			json.put("phone", userOrder.getPhone());
-			json.put("name", userOrder.getName());
-			json.put("surname", userOrder.getSurname());
-			json.put("orderDate", new SimpleDateFormat("yyyy-MM-dd").format(userOrder.getOrderDate()));
-
-			StringEntity params = new StringEntity(json.toString(), "UTF-8");
-			request.addHeader("content-type", "application/json;charset=UTF-8");
-			request.setEntity(params);
-			HttpResponse response = (HttpResponse) CLIENT.execute(request);
-			HttpEntity entity = response.getEntity();
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
-
-			try {
-				uOrder = mapper.readValue((EntityUtils.toString(entity)), UserOrder.class);
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			}
-
-		} catch (IOException ex) {
-		}
 
 		if (randompayment()) {
+			UserOrder uOrder = null;
+			try {
+				CLIENT = HttpClients.createDefault();
+				HttpPost request = new HttpPost("http://localhost:8080/backend-0.0.1-SNAPSHOT/rest/addUserOrder");
+				JSONObject json = new JSONObject();
+				json.put("address", userOrder.getAddress());
+				json.put("email", userOrder.getEmail());
+				json.put("phone", userOrder.getPhone());
+				json.put("name", userOrder.getName());
+				json.put("surname", userOrder.getSurname());
+				json.put("orderDate", new SimpleDateFormat("yyyy-MM-dd").format(userOrder.getOrderDate()));
+
+				StringEntity params = new StringEntity(json.toString(), "UTF-8");
+				request.addHeader("content-type", "application/json;charset=UTF-8");
+				request.setEntity(params);
+				HttpResponse response = (HttpResponse) CLIENT.execute(request);
+				HttpEntity entity = response.getEntity();
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+
+				try {
+					uOrder = mapper.readValue((EntityUtils.toString(entity)), UserOrder.class);
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				}
+
+			} catch (IOException ex) {
+			}
+
 			for (OrderedItem orderedItem : basket.getItems()) {
 				orderedItem.setUserOrder(uOrder);
 				try {
@@ -158,11 +160,18 @@ public class UserOrderManager {
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Payment is OK", null));
-			
+
+			try {
+				ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+				ec.redirect("http://localhost:8080/frontend-0.0.1-SNAPSHOT/item/list.xhtml");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Payment is fault", null));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Payment is fault, try again", null));
 		}
 	}
 
