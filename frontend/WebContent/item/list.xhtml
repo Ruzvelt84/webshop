@@ -20,8 +20,6 @@
 				<p:contextMenu for="items">
 					<p:menuitem value="Detail" update="display" icon="ui-icon-search"
 						oncomplete="PF('itemDialog').show()" />
-					<p:menuitem value="Delete" update="items" icon="ui-icon-close"
-						actionListener="#{itemManager.removeSelected()}" />
 				</p:contextMenu>
 
 				<p:dataTable var="item" value="#{itemManager.items}" id="items"
@@ -35,10 +33,10 @@
 					<p:column headerText="price">
 					#{item.price}
 				</p:column>
-				<p:column headerText="image">
-					<h:graphicImage url="#{item.image}"/>
-				</p:column>
-				<p:column headerText="stock">
+					<p:column headerText="image">
+						<h:graphicImage url="#{item.image}" />
+					</p:column>
+					<p:column headerText="stock">
 					#{item.stock}
 				</p:column>
 				</p:dataTable>

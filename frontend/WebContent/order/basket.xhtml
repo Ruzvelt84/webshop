@@ -96,13 +96,27 @@
 					<p:row>
 						<p:column colspan="2">
 							<p:commandButton action="#{userOrderManager.save}"
-								value="Order items" update="grid" />
+								value="Buy items" update="grid" />
 						</p:column>
 					</p:row>
 				</p:panelGrid>
 
 			</h:form>
 
+			<br />
+			<br />
+
+			<h:form>
+				<h:outputText value="Select payment method" />
+				<br />
+				<br />
+				<p:selectOneRadio id="name"
+					value="#{userOrderManager.paymentMethod.name}" layout="responsive"
+					columns="1" rows="2">
+					<f:selectItems value="#{userOrderManager.paymentMethods}" var="pm"
+						itemLabel="#{name}" itemValue="#{name}" />
+				</p:selectOneRadio>
+			</h:form>
 		</ui:define>
 
 	</ui:composition>

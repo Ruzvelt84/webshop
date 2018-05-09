@@ -1,6 +1,7 @@
 package backend.rest;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,9 +15,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import backend.dao.OrderedProductDao;
+import backend.dao.PaymentMethodDao;
 import backend.dao.ProductDao;
 import backend.dao.UserOrderDao;
 import backend.model.OrderedProduct;
+import backend.model.PaymentMethod;
 import backend.model.Product;
 import backend.model.UserOrder;
 
@@ -30,12 +33,44 @@ public class RestService {
 	UserOrderDao userOrderDao;
 	@EJB
 	OrderedProductDao orderedProductDao;
+	@EJB
+	PaymentMethodDao paymentMethodDao;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Path("getProducts")
 	public Response getProducts() {
 		HashMap<String, Object> json = null;
+
+		if (paymentMethodDao.getPaymentMethodByName("CASH") == null) {
+			PaymentMethod paymentMethod = new PaymentMethod();
+			paymentMethod.setName("CASH");
+			paymentMethodDao.addPaymentMethod(paymentMethod);
+		}
+
+		if (paymentMethodDao.getPaymentMethodByName("CARD") == null) {
+			PaymentMethod paymentMethod = new PaymentMethod();
+			paymentMethod.setName("CARD");
+			paymentMethodDao.addPaymentMethod(paymentMethod);
+		}
+
+		if (productDao.getProductByName("Jaffa") == null) {
+			Product product = new Product();
+			product.setDescription("Jaffa");
+			product.setImage("https://elakolije.univerexport.rs/slike_pro/pro_v_0088032.jpg");
+			product.setPrice(120);
+			product.setStock(20);
+			productDao.addProduct(product);
+		}
+
+		if (productDao.getProductByName("Plazma") == null) {
+			Product product = new Product();
+			product.setDescription("Plazma");
+			product.setImage("https://elakolije.univerexport.rs/slike_pro/pro_v_1010934.jpg");
+			product.setPrice(150);
+			product.setStock(30);
+			productDao.addProduct(product);
+		}
 
 		try {
 			return Response.ok().entity(productDao.getProducts()).build();
@@ -61,6 +96,35 @@ public class RestService {
 
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Path("getPaymentMethods")
+	public Response getPaymentMethods() {
+		HashMap<String, Object> json = null;
+
+		try {
+			return Response.ok().entity(paymentMethodDao.getPaymentMethods()).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.ok().entity(json).build();
+		}
+
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Path("getPaymentStatus")
+	public Response getPaymentStatus() {
+		HashMap<String, Object> json = null;
+		Random random = new Random();
+		try {
+			return Response.ok().entity(random.nextBoolean()).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.ok().entity(json).build();
+		}
+	}
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Path("addProduct")
@@ -76,7 +140,7 @@ public class RestService {
 		}
 
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Path("editProduct")
@@ -106,7 +170,7 @@ public class RestService {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Path("addOrderedProduct")
@@ -121,7 +185,7 @@ public class RestService {
 		}
 
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Path("add")

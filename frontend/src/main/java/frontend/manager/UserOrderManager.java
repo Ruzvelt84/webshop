@@ -2,9 +2,8 @@ package frontend.manager;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -16,6 +15,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import frontend.domain.Basket;
 import frontend.model.OrderedItem;
+import frontend.model.PaymentMethod;
 import frontend.model.UserOrder;
-import frontend.model.UserOrderResponse;
 
 @ViewScoped
 @ManagedBean
@@ -39,9 +39,11 @@ public class UserOrderManager {
 	private CloseableHttpClient CLIENT = HttpClients.createDefault();
 
 	private UserOrder userOrder;
-	private UserOrderResponse userOrderResponse;
+
+	private PaymentMethod paymentMethod;
 
 	private List<UserOrder> userOrders;
+	List<PaymentMethod> paymentMethods;
 
 	@ManagedProperty("#{basket}")
 	private Basket basket;
@@ -49,11 +51,12 @@ public class UserOrderManager {
 	@PostConstruct
 	public void init() {
 		userOrder = new UserOrder();
+		paymentMethod = new PaymentMethod();
+		paymentMethods = new ArrayList<>();
 	}
 
 	public void save() {
-
-		if (randompayment()) {
+		if (randomPayment()) {
 			UserOrder uOrder = null;
 			try {
 				CLIENT = HttpClients.createDefault();
@@ -168,24 +171,62 @@ public class UserOrderManager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			basket.clear();
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Payment is fault, try again", null));
 		}
+
 	}
 
-	public boolean randompayment() {
-		Random random = new Random();
-		return random.nextBoolean();
+	public List<PaymentMethod> getPaymentMethods() {
+
+		CLIENT = HttpClients.createDefault();
+		HttpGet request = new HttpGet("http://localhost:8080/backend-0.0.1-SNAPSHOT/rest/getPaymentMethods");
+		request.addHeader("content-type", "application/json;charset=UTF-8");
+		request.addHeader("charset", "UTF-8");
+		HttpResponse response;
+
+		try {
+
+			response = (HttpResponse) CLIENT.execute(request);
+			HttpEntity entity = response.getEntity();
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+			PaymentMethod[] model = mapper.readValue((EntityUtils.toString(entity)), PaymentMethod[].class);
+
+			for (PaymentMethod paymentMethod : model) {
+				paymentMethods.add(paymentMethod);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return paymentMethods;
 	}
 
-	public void loadAll() {
-		// userOrders = userOrderService.findAll();
-	}
+	public boolean randomPayment() {
+		boolean status = false;
+		CLIENT = HttpClients.createDefault();
+		HttpGet request = new HttpGet("http://localhost:8080/backend-0.0.1-SNAPSHOT/rest/getPaymentStatus");
+		request.addHeader("content-type", "application/json;charset=UTF-8");
+		request.addHeader("charset", "UTF-8");
+		HttpResponse response;
 
-	public void loadAllWithItems() {
-		// userOrders = userOrderService.findAllWithItems();
+		try {
+
+			response = (HttpResponse) CLIENT.execute(request);
+			HttpEntity entity = response.getEntity();
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+			status = mapper.readValue((EntityUtils.toString(entity)), Boolean.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return status;
 	}
 
 	public UserOrder getUserOrder() {
@@ -202,6 +243,14 @@ public class UserOrderManager {
 
 	public void setBasket(Basket basket) {
 		this.basket = basket;
+	}
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 }

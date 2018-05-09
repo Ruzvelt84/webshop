@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import backend.model.PaymentMethod;
 import backend.model.Product;
 
 @Stateless
@@ -21,6 +23,18 @@ public class ProductDao {
 	public Product getProduct(long productId) {
 		return entityManager.createQuery("SELECT p FROM Product p WHERE p.id = :ids", Product.class)
 				.setParameter("ids", productId).getSingleResult();
+	}
+
+	public Product getProductByName(String productName) {
+		Product product;
+		try {
+			product = entityManager
+					.createQuery("SELECT p FROM Product p WHERE p.description = :description", Product.class)
+					.setParameter("description", productName).getSingleResult();
+		} catch (NoResultException e) {
+			product = null;
+		}
+		return product;
 	}
 
 	public void addProduct(Product product) {

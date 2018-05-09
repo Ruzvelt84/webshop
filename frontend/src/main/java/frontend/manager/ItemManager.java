@@ -116,10 +116,6 @@ public class ItemManager {
 		}
 	}
 
-	public void loadAll() {
-		// items = itemService.findAll();
-	}
-
 	public void save() {
 
 		try {
