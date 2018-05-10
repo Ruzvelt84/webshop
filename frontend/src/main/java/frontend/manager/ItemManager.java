@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import frontend.domain.Basket;
 import frontend.model.Item;
+import frontend.model.OrderedItem;
 
 @ViewScoped
 @ManagedBean
@@ -85,8 +86,16 @@ public class ItemManager {
 			Item[] model = mapper.readValue((EntityUtils.toString(entity)), Item[].class);
 
 			for (Item item : model) {
+				for (OrderedItem orderedItem : basket.getItems()) {
+					if (orderedItem.getItem().getId() == item.getId()) {
+						item.setStock(item.getStock() - orderedItem.getQuantity());
+					}
+				}
 				items.add(item);
 			}
+			
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
